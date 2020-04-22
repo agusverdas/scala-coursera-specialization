@@ -106,6 +106,8 @@ class Empty extends TweetSet {
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
+  val e: Tweet = elem;
+
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet =
     if (p(elem)) left.filterAcc(p, right.filterAcc(p, acc.incl(elem)))
     else left.filterAcc(p, right.filterAcc(p, acc))
@@ -145,26 +147,29 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   }
 
   def mostRetweeted: Tweet = {
+
     /*
     This solution is more clear, but can't find where the bug is
     and why can't do nonEmpty.elem
 
+     Upd. Scala. Professional programming 6.5. Explanation.
+     */
     @scala.annotation.tailrec
     def innerMostRetweeted(max: Tweet, set: TweetSet): Tweet = {
       set match {
         case _: Empty => max
         case nonEmpty: NonEmpty =>
-          if (nonEmpty.elem.retweets > max.retweets) innerMostRetweeted(nonEmpty.elem, set remove nonEmpty.elem)
-          else innerMostRetweeted(max, set remove nonEmpty.elem)
+          if (nonEmpty.e.retweets > max.retweets) innerMostRetweeted(nonEmpty.e, set remove nonEmpty.e)
+          else innerMostRetweeted(max, set remove nonEmpty.e)
       }
     }
-    innerMostRetweeted(elem, this remove elem)*/
-    left match {
+    innerMostRetweeted(elem, this remove elem)
+    /*left match {
       case _: Empty if right.isInstanceOf[Empty] => elem
       case _: Empty if !right.isInstanceOf[Empty] => max(elem, right.mostRetweeted)
       case _ => if (!left.isInstanceOf[Empty] && right.isInstanceOf[Empty]) max(elem, left.mostRetweeted)
       else max(left.mostRetweeted, right.mostRetweeted)
-    }
+    }*/
   }
 
   /**

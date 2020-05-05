@@ -2,4 +2,7 @@
 /course-1/**/null
 /course-1/**/target
 /course-1/**/*.iml
-/course-2
+.idea
+null
+target
+*.iml
